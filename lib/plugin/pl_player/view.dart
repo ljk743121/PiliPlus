@@ -2040,11 +2040,12 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
                         ),
                       ),
                       Obx(() {
-                        final duration =
-                            plPlayerController.durationSeconds.value;
-                        final position = plPlayerController.position.value;
+                        final durationSeconds =
+                            plPlayerController.durationSeconds.value.inSeconds;
+                        final positionSeconds =
+                            plPlayerController.positionSeconds.value;
                         final speed = plPlayerController.playbackSpeed;
-                        if (duration.inSeconds <= 0 || speed <= 0) {
+                        if (durationSeconds <= 0 || speed <= 0) {
                           return const Text(
                             '--:--',
                             style: TextStyle(
@@ -2056,8 +2057,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
                             ),
                           );
                         }
-                        final remaining =
-                            duration.inSeconds - position.inSeconds;
+                        final remaining = durationSeconds - positionSeconds;
                         final adjustedRemaining = remaining / speed;
                         final endTime = DateTime.now().add(
                           Duration(seconds: adjustedRemaining.round()),
