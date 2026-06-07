@@ -2009,6 +2009,79 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
                   )
                 : const SizedBox.shrink();
           }),
+
+        /// 预计结束时间
+        if (!isLive)
+          Positioned(
+            right: 12,
+            bottom: isFullScreen ? 70 : 50,
+            child: Obx(
+              () => Offstage(
+                offstage: !plPlayerController.showControls.value,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.6),
+                    borderRadius: const BorderRadius.all(Radius.circular(6)),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      const Text(
+                        '预计结束',
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontSize: 10,
+                          height: 1.2,
+                        ),
+                      ),
+                      Obx(() {
+                        final duration =
+                            plPlayerController.durationSeconds.value;
+                        final position = plPlayerController.position.value;
+                        final speed = plPlayerController.playbackSpeed;
+                        if (duration.inSeconds <= 0 || speed <= 0) {
+                          return const Text(
+                            '--:--',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              height: 1.2,
+                              fontWeight: FontWeight.bold,
+                              fontFeatures: [FontFeature.tabularFigures()],
+                            ),
+                          );
+                        }
+                        final remaining =
+                            duration.inSeconds - position.inSeconds;
+                        final adjustedRemaining = remaining / speed;
+                        final endTime = DateTime.now().add(
+                          Duration(seconds: adjustedRemaining.round()),
+                        );
+                        final hour = endTime.hour.toString().padLeft(2, '0');
+                        final minute =
+                            endTime.minute.toString().padLeft(2, '0');
+                        return Text(
+                          '$hour:$minute',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            height: 1.2,
+                            fontWeight: FontWeight.bold,
+                            fontFeatures: [FontFeature.tabularFigures()],
+                          ),
+                        );
+                      }),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
       ],
     );
     if (PlatformUtils.isDesktop) {
